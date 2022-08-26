@@ -1,6 +1,6 @@
 
-largura = 1920
-altura = 1020
+largura = 1280
+altura = 720
 base_rampa = 0
 altura_rampa = 0
-dist_rampa = 300
+dist_rampa = largura/3

@@ -10,7 +10,7 @@ import os
 pygame.init()
 
 # Tudo sobre .a tela
-tela = pygame.display.set_mode((parametros.largura, parametros.altura))
+tela = pygame.display.set_mode((parametros.largura, parametros.altura), pygame.RESIZABLE)
 pygame.display.set_caption('movimento obliquo')
 fps = pygame.time.Clock()
 programIcon = pygame.image.load('icon.png')
@@ -46,15 +46,15 @@ def Tela():
 
 
 def Rampa(angulo):
-    pygame.draw.line(tela, (255, 0, 0), (0, 950), (1920, 950), 5)
+    pygame.draw.line(tela, (255, 0, 0), (0, parametros.altura-70), (parametros.largura, parametros.altura-70), 5)
     angulo = math.radians(angulo)
     parametros.base_rampa = 100 * math.cos(angulo)
     parametros.altura_rampa = 100 * math.sin(angulo)
-    pygame.draw.line(tela, (255, 255, 255), (0, 950), (parametros.dist_rampa + parametros.base_rampa, 950), 20)
-    pygame.draw.line(tela, (255, 255, 255), (parametros.dist_rampa, 950),
-                     (parametros.dist_rampa + parametros.base_rampa, 950 - parametros.altura_rampa),
+    pygame.draw.line(tela, (255, 255, 255), (0, parametros.altura-70), (parametros.dist_rampa + parametros.base_rampa, parametros.altura-70), 20)
+    pygame.draw.line(tela, (255, 255, 255), (parametros.dist_rampa, parametros.altura-70),
+                     (parametros.dist_rampa + parametros.base_rampa, parametros.altura-70 - parametros.altura_rampa),
                      20)
-    pygame.draw.line(tela, (255, 255, 255), (distancia_user, 950), (1920, 950), 20)
+    pygame.draw.line(tela, (255, 255, 255), (distancia_user, parametros.altura-70), (parametros.largura, parametros.altura-70), 20)
 
 
 def Entrada_angulo():
@@ -100,13 +100,13 @@ def Saida(msg):
 
 
 def Grade():
-    i = 950
+    i = parametros.altura-70
     while i >= 0:
-        pygame.draw.line(tela, (255, 255, 255), (0, i), (1920, i))
+        pygame.draw.line(tela, (100, 100, 100), (0, i), (parametros.largura, i))
         i = i - 50
     j = 0
-    while j <= 1920:
-        pygame.draw.line(tela, (255, 255, 255), (j, 0), (j, 1020))
+    while j <= parametros.largura:
+        pygame.draw.line(tela, (100, 100, 100), (j, 0), (j, parametros.altura))
         j = j + 50
 
     x = 0
@@ -140,7 +140,19 @@ while True:
 
     # print (Moto.rect.x)
 
+
+
     for event in pygame.event.get():
+
+        # readequar conteudo ao redimensionar a tela
+        if event.type == pygame.VIDEORESIZE:
+            parametros.largura=event.w
+            parametros.altura=event.h
+
+            Moto.rect.bottomleft = [0, parametros.altura-70]
+
+            tela = pygame.display.set_mode((parametros.largura, parametros.altura), pygame.RESIZABLE)
+
 
         if event.type == QUIT:
             pygame.quit()

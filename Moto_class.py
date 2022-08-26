@@ -28,7 +28,7 @@ class Moto(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         # self.image = pygame.transform.scale(self.image, (300, 150))  # 50 px = 1m
-        self.rect.bottomleft = [0, 950]
+        self.rect.bottomleft = [0, parametros.altura-70]
 
     def update(self, nom, vel):
 
@@ -44,10 +44,10 @@ class Moto(pygame.sprite.Sprite):
             self.rect.x = self.posx + ((5 / 3) * vel * math.cos(math.radians(nom))) * self.t
         # - 100 * math.sin(nom)   + 100 * math.cos(nom)
 
-        if self.rect.x >= 1920 or self.rect.y >= 950:
+        if self.rect.x >= 1920 or self.rect.y >= parametros.altura-70:
             self.pulo = False
             self.rampa = False
-            self.rect.bottomleft = [0, 950]
+            self.rect.bottomleft = [0, parametros.altura-70]
             self.movimento = False
             # self.image = pygame.transform.rotate(self.image, 0)
 
