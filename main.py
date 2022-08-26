@@ -58,10 +58,15 @@ def Rampa(angulo):
 
 
 def Entrada_angulo():
+    title = Fontes.tiny_font.render(str("Ângulo da rampa (graus)"), True, (255, 255, 255))
+    tela.blit(title, (Fontes.input_rect_angulo.x - 12, Fontes.input_rect_angulo.y - 20))
+
     pygame.draw.rect(tela, color, Fontes.input_rect_angulo)
     angulo_temp = Fontes.base_font.render(str(user_text_ang), True, (255, 255, 255))
+
     tela.blit(angulo_temp, (Fontes.input_rect_angulo.x + 10, Fontes.input_rect_angulo.y + 5))
     Fontes.input_rect_angulo.w = max(100, angulo_temp.get_width() + 10)
+
     if user_text_ang != '':
 
         return int(user_text_ang)
@@ -70,10 +75,14 @@ def Entrada_angulo():
 
 
 def Entrada_velocidade():
+    title = Fontes.tiny_font.render(str("Velocidade (m/s)"), True, (255, 255, 255))
+    tela.blit(title, (Fontes.input_rect_velocidade.x + 5, Fontes.input_rect_velocidade.y - 20))
+
     pygame.draw.rect(tela, color, Fontes.input_rect_velocidade)
     velocidade_temp = Fontes.base_font.render(str(user_text_vel), True, (255, 255, 255))
     tela.blit(velocidade_temp, (Fontes.input_rect_velocidade.x + 10, Fontes.input_rect_velocidade.y + 5))
     Fontes.input_rect_velocidade.w = max(100, velocidade_temp.get_width() + 10)
+
     if user_text_vel != '':
 
         return int(user_text_vel)
@@ -82,10 +91,14 @@ def Entrada_velocidade():
 
 
 def Entrada_distancia():
+    title = Fontes.tiny_font.render(str("Distância (m)"), True, (255, 255, 255))
+    tela.blit(title, (Fontes.input_rect_distancia.x + 15, Fontes.input_rect_distancia.y - 20))
+
     pygame.draw.rect(tela, color, Fontes.input_rect_distancia)
     distancia_temp = Fontes.base_font.render(str(user_text_dist), True, (255, 255, 255))
     tela.blit(distancia_temp, (Fontes.input_rect_distancia.x + 10, Fontes.input_rect_distancia.y + 5))
     Fontes.input_rect_distancia.w = max(100, distancia_temp.get_width() + 10)
+
     if user_text_dist != '':
 
         return float(user_text_dist)
@@ -165,12 +178,10 @@ while True:
 
             elif Fontes.input_rect_velocidade.collidepoint(event.pos):
                 user_text_vel = ''
-
                 active_velocidade = True
 
             elif Fontes.input_rect_distancia.collidepoint(event.pos):
                 user_text_dist = ''
-
                 active_distancia = True
 
             else:
@@ -229,8 +240,8 @@ while True:
 
         if active_distancia:
             color = Fontes.color_active
+            
             if event.type == pygame.KEYDOWN:
-
                 # Check for backspace
                 if event.key == pygame.K_BACKSPACE:
                     # get text input from 0 to -1 i.e. end.
