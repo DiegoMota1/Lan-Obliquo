@@ -18,16 +18,18 @@ pygame.display.set_icon(programIcon)
 # Tela acaba aqui
 
 
-angulo_temp = 0
-user_text_ang = 0
+angulo_temp = 30
+user_text_ang = 30
 velocidade_temp = 0
 user_text_vel = 0
-distancia_temp = 0
-user_text_dist = 0
-color = (255, 0, 0)
-angulo = 0
+distancia_temp = 10
+user_text_dist = 10
+color_angulo = (120, 0, 0)
+color_velocidade = (0, 120, 0)
+color_distancia = (0, 0, 120)
+angulo = 30
 velocidade = 0
-distancia = 0
+distancia = 10
 
 active_angulo = False
 active_velocidade = False
@@ -50,18 +52,17 @@ def Rampa(angulo):
     angulo = math.radians(angulo)
     parametros.base_rampa = 100 * math.cos(angulo)
     parametros.altura_rampa = 100 * math.sin(angulo)
-    pygame.draw.line(tela, (255, 255, 255), (0, parametros.altura-70), (parametros.dist_rampa + parametros.base_rampa, parametros.altura-70), 20)
-    pygame.draw.line(tela, (255, 255, 255), (parametros.dist_rampa, parametros.altura-70),
-                     (parametros.dist_rampa + parametros.base_rampa, parametros.altura-70 - parametros.altura_rampa),
+    pygame.draw.line(tela, (200, 200, 200), (0, parametros.altura-70), (parametros.dist_rampa + parametros.base_rampa, parametros.altura-70), 20)
+    pygame.draw.line(tela, (200, 200, 200), (parametros.dist_rampa, parametros.altura-70),(parametros.dist_rampa + parametros.base_rampa, parametros.altura-70 - parametros.altura_rampa),
                      20)
-    pygame.draw.line(tela, (255, 255, 255), (distancia_user, parametros.altura-70), (parametros.largura, parametros.altura-70), 20)
+    pygame.draw.line(tela, (200, 200, 200), (distancia_user, parametros.altura-70), (parametros.largura, parametros.altura-70), 20)
 
 
 def Entrada_angulo():
     title = Fontes.tiny_font.render(str("Ângulo da rampa (graus)"), True, (255, 255, 255))
     tela.blit(title, (Fontes.input_rect_angulo.x - 12, Fontes.input_rect_angulo.y - 20))
 
-    pygame.draw.rect(tela, color, Fontes.input_rect_angulo)
+    pygame.draw.rect(tela, color_angulo, Fontes.input_rect_angulo)
     angulo_temp = Fontes.base_font.render(str(user_text_ang), True, (255, 255, 255))
 
     tela.blit(angulo_temp, (Fontes.input_rect_angulo.x + 10, Fontes.input_rect_angulo.y + 5))
@@ -78,7 +79,7 @@ def Entrada_velocidade():
     title = Fontes.tiny_font.render(str("Velocidade (m/s)"), True, (255, 255, 255))
     tela.blit(title, (Fontes.input_rect_velocidade.x + 5, Fontes.input_rect_velocidade.y - 20))
 
-    pygame.draw.rect(tela, color, Fontes.input_rect_velocidade)
+    pygame.draw.rect(tela, color_velocidade, Fontes.input_rect_velocidade)
     velocidade_temp = Fontes.base_font.render(str(user_text_vel), True, (255, 255, 255))
     tela.blit(velocidade_temp, (Fontes.input_rect_velocidade.x + 10, Fontes.input_rect_velocidade.y + 5))
     Fontes.input_rect_velocidade.w = max(100, velocidade_temp.get_width() + 10)
@@ -94,7 +95,7 @@ def Entrada_distancia():
     title = Fontes.tiny_font.render(str("Distância (m)"), True, (255, 255, 255))
     tela.blit(title, (Fontes.input_rect_distancia.x + 15, Fontes.input_rect_distancia.y - 20))
 
-    pygame.draw.rect(tela, color, Fontes.input_rect_distancia)
+    pygame.draw.rect(tela, color_distancia, Fontes.input_rect_distancia)
     distancia_temp = Fontes.base_font.render(str(user_text_dist), True, (255, 255, 255))
     tela.blit(distancia_temp, (Fontes.input_rect_distancia.x + 10, Fontes.input_rect_distancia.y + 5))
     Fontes.input_rect_distancia.w = max(100, distancia_temp.get_width() + 10)
@@ -130,9 +131,11 @@ def Grade():
         y = (Moto.posy - ((velocidade * (5 / 3)) * (math.sin(math.radians(angulo)) * t) - ((5 / 90) * 4.9) * (
             t * t))) + 50
         x = (Moto.posx + ((5 / 3) * velocidade * math.cos(math.radians(angulo))) * t) + 25
-        pygame.draw.circle(tela, (255, 0, 0), (x, y), 3)
-        t = t+1
 
+        if y < parametros.altura-100 or x < (Entrada_distancia() * 50) + parametros.dist_rampa:
+            pygame.draw.circle(tela, (255, 0, 0), (x, y), 3)
+      
+        t = t+1
 
 while True:
 
@@ -140,20 +143,26 @@ while True:
     # print(fps)
     if Moto.teste:
         pygame.draw.circle(tela, (0, 255, 0), (500, 500), 50)
+
     Grade()
+
     angulo_user = Entrada_angulo()
     velocidade_user = Entrada_velocidade()
-    distancia_user = (Entrada_distancia() * 50) + 400
+    distancia_user = (Entrada_distancia() * 50) + parametros.dist_rampa
+ 
     Rampa(angulo)
 
-    Entrada_angulo()
+    #colisao com o "chao"
+    if Moto.rect.y > parametros.altura-120:
+        if Moto.rect.x > distancia_user:
+            Moto.rect.y = parametros.altura-120
+            Moto.ang = 0
+            Moto.image = pygame.transform.rotate(Moto.og_image, Moto.ang)
+            Moto.pulo = False
+            Moto.rampa = False
 
     sprites.draw(tela)
     sprites.update(angulo, velocidade)
-
-    # print (Moto.rect.x)
-
-
 
     for event in pygame.event.get():
 
@@ -190,8 +199,7 @@ while True:
                 active_distancia = False
 
         if active_angulo:
-
-            color = Fontes.color_active
+            color_angulo = (180, 0, 0)
             if event.type == pygame.KEYDOWN:
 
                 # Check for backspace
@@ -204,6 +212,7 @@ while True:
                 # Unicode standard is used for string
                 if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                     active_angulo = False
+                    color_angulo = (120, 0, 0)
 
                     if 80 >= angulo_user >= 0:
                         angulo = angulo_user
@@ -214,14 +223,18 @@ while True:
 
         else:
             color = Fontes.color_passive
-            if angulo_user > 80 or angulo_user < 0:
+            if angulo_user > 80:
+                user_text_ang = '80'
+
+            if angulo_user < 0:
                 user_text_ang = '0'
 
         # draw rectangle and argument passed which should
         # be on screen
 
         if active_velocidade:
-            color = Fontes.color_active
+            color_velocidade = (0, 180, 0)
+
             if event.type == pygame.KEYDOWN:
 
                 # Check for backspace
@@ -232,6 +245,8 @@ while True:
                 # Unicode standard is used for string
                 if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                     active_velocidade = False
+                    color_velocidade = (0, 120, 0)
+
                     if 50 >= velocidade_user >= 0:
                         velocidade = velocidade_user
 
@@ -239,7 +254,7 @@ while True:
                     user_text_vel += event.unicode
 
         if active_distancia:
-            color = Fontes.color_active
+            color_distancia = (0, 0, 180)
             
             if event.type == pygame.KEYDOWN:
                 # Check for backspace
@@ -250,6 +265,8 @@ while True:
                 # Unicode standard is used for string
                 if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                     active_distancia = False
+                    color_distancia = (0, 0, 120)
+
                     if 30 >= distancia_user >= 0:
                         distancia = distancia_user
 
@@ -257,7 +274,6 @@ while True:
                     user_text_dist += event.unicode
 
         else:
-            color = Fontes.color_passive
             if distancia_user > 1700 or distancia_user < 00:
                 user_text_dist = '0'
 
