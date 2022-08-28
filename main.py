@@ -44,8 +44,6 @@ sprites.add(Moto)
 def Tela():
     tela.fill((0, 0, 0))
     fps.tick(30)
-    # pygame.draw.circle(tela, (255, 0, 0), (Moto.rect.x, Moto.rect.y), 0.5)
-
 
 def Rampa(angulo):
     pygame.draw.line(tela, (255, 0, 0), (0, parametros.altura-70), (parametros.largura, parametros.altura-70), 5)
@@ -152,17 +150,10 @@ while True:
  
     Rampa(angulo)
 
-    #colisao com o "chao"
-    if Moto.rect.y > parametros.altura-120:
-        if Moto.rect.x > distancia_user:
-            Moto.rect.y = parametros.altura-120
-            Moto.ang = 0
-            Moto.image = pygame.transform.rotate(Moto.og_image, Moto.ang)
-            Moto.pulo = False
-            Moto.rampa = False
+
 
     sprites.draw(tela)
-    sprites.update(angulo, velocidade)
+    sprites.update(angulo, velocidade, distancia_user)
 
     for event in pygame.event.get():
 
